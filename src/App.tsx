@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
-import Render from './Render';
-import { Transform } from './GraphicsEngine/Transform';
-import { AsymmetricalStack, boxes4x2 } from './BoxConfig';
+import { Example1 } from './LTL-Examples/Example1_VertexData/Example1_VertexData';
+import { Example2 } from './LTL-Examples/Example2_Buffers/Example2_Buffers';
+import { Example3 } from './LTL-Examples/Example3_Matrices/Example3_Matrices';
+import { Example4 } from './LTL-Examples/Example4_Shaders/Example4_Shaders';
+import { Example5 } from './LTL-Examples/Example5_DOMEvents/Example5_DOMEvents';
 
-function App() {
-  const [boxConfig, setBoxConfig] = useState<Transform[]>(AsymmetricalStack)
+const App = () => {
+  const [exampleIndex, setExampleIndex] = useState<number>(0);
 
   return (
-    <>
-      <div style={{display: "flex", justifyContent: 'space-between', gap: '1rem', flexDirection: 'column'}}>
-        <div>
-          <button onClick={()=>{setBoxConfig(boxes4x2)}}>4x2</button>
-          <button onClick={()=>{setBoxConfig(AsymmetricalStack)}}>Asymmetrical</button>
-        </div>
-        <Render loading={false} boxConfig={boxConfig}/>
+    <div>
+      <div style={{display: "flex", justifyContent: 'space-between', padding: '1rem', backgroundColor: '#9A9A9A'}}>
+          <button onClick={()=>{setExampleIndex(0)}}>Example 1 - Vertex Data</button>
+          <button onClick={()=>{setExampleIndex(1)}}>Example 2 - Buffers</button>
+          <button onClick={()=>{setExampleIndex(2)}}>Example 3 - Matrices and Uniforms</button>
+          <button onClick={()=>{setExampleIndex(3)}}>Example 4 - Shaders</button>
+          <button onClick={()=>{setExampleIndex(4)}}>Example 5 - HTML DOM Events</button>
       </div>
-    </>
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+        {exampleIndex === 0 && <Example1 />}
+        {exampleIndex === 1 && <Example2 />}
+        {exampleIndex === 2 && <Example3 />}
+        {exampleIndex === 3 && <Example4 />}
+        {exampleIndex === 4 && <Example5 />}
+      </div>
+    </div>
   )
 }
 
