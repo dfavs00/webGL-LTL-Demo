@@ -47,13 +47,13 @@ export const Example1: React.FC = () => {
 
         // To view the WebGL code for this example, dive into the Example1VertexData class in the example1.ts file
         const cameraProjectionData: Projection = {
-            aspectRatio: canvasWidth / canvasHeight,
+            aspectRatio: (window.innerWidth / CANVAS_SCALE) / (window.innerHeight / CANVAS_SCALE),
             fovY: 1.0472,
             near: 0.1,
             far: 1000
         }
 
-        example1Ref.current = new ExampleScene(gl, CANVAS_SCALE, cameraProjectionData, modelData)
+        example1Ref.current = new ExampleScene(gl, CANVAS_SCALE, cameraProjectionData, CubeModelData)
         example1Ref.current?.start((time: number) => {
             example1Ref.current?.rotateModel(vec3.fromValues(0.5, 0.5, 0.5))
         })
@@ -61,7 +61,7 @@ export const Example1: React.FC = () => {
         return () => {
             example1Ref.current?.stop()
         }
-    }, [canvasHeight, canvasWidth, modelData])
+    }, [])
 
     const updateModelData = (newVertexData: number[]) => {
         const newModelData: ModelData = {
@@ -83,12 +83,15 @@ export const Example1: React.FC = () => {
             </div>
             <div style={{padding: '1rem'}}>
                 <h3>
-                    Each vertex of the cube is shown in the editor to the right of the canvas. Edit vertices to see how the model changes.
+                    A model is made up of vertices, each vertex on a model contains attributes such as position, normal direction, texture coords, etc.
                 </h3>
-                <h4>I recommend using the step buttons on the inputs to change the values.</h4>
-                <div>
+                <h3>
+                    The position attribute of the model's vertices are shown in the editor to the right of the canvas. Edit the vertex positions to see how the model changes!
+                </h3>
+                <h3>(I recommend using the step buttons on the inputs to change the values.)</h3>
+                <h3>
                     Reset at any time by refreshing the page!
-                </div>
+                </h3>
             </div>
         </div>
     )

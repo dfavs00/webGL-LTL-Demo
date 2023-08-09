@@ -5,6 +5,7 @@ import { ModelData } from "../GraphicsEngine/Model";
 import { compileShader, createShaderProgram } from "../GraphicsEngine/ShaderUtils";
 import { Projection } from "../GraphicsEngine/Scene";
 import { Light } from "../GraphicsEngine/Light/Light";
+import { Transform } from "../GraphicsEngine/Transform";
 
 export class ExampleScene {
     // webGL data
@@ -12,6 +13,7 @@ export class ExampleScene {
     private modelData: ModelData
     private shaderProgram: WebGLProgram | null = null
     private vertexBuffer: WebGLBuffer | null = null
+    private indexBuffer: WebGLBuffer | null = null
 
     // object transform
     private position: vec3
@@ -33,24 +35,26 @@ export class ExampleScene {
 
     // demo info
     private customRenderCallback: ((timestamp: number) => void) | null = null
-    private color: number[] = [0.15, 1.0, 0.75, 1.0]
+    private color: number[] = [0.25, 1.0, 0.75, 1.0]
 
-    constructor(gl: WebGL2RenderingContext, canvasScale: number, projection: Projection, modelData: ModelData) {
+    constructor(gl: WebGL2RenderingContext, canvasScale: number, projection: Projection, modelData: ModelData, modelTransform?: Transform, cameraTransform?: Transform, color?: vec3) {
         this.gl = gl
 
         // The cube model data is stored in Cube.ts
         //  You will see in the future demos that the data can also be stored in a file and imported
         this.modelData = modelData
+        this.vertexBuffer = this.gl.createBuffer()
+        this.indexBuffer = this.gl.createBuffer()
 
         // Place object at the origin with no rotation
-        this.position = vec3.create()
-        this.rotation = quat.create()
-        this.scale = vec3.fromValues(1, 1, 1)
+        this.position = modelTransform ? modelTransform.position : vec3.create()
+        this.rotation = modelTransform ? modelTransform.rotation : quat.fromEuler(quat.create(), 0, 45, 0)
+        this.scale = modelTransform ? modelTransform.scale : vec3.fromValues(1, 1, 1)
         this.modelMatrix = mat4.fromRotationTranslationScale(mat4.create(), this.rotation, this.position, this.scale)
 
         // Camera setup
         this.cameraPosition = vec3.fromValues(0, 0, -3)
-        this.cameraRotation =  quat.fromEuler(quat.create(), 45, 45, 0)
+        this.cameraRotation =  quat.create()
         this.viewMatrix = mat4.fromRotationTranslation(mat4.create(), this.cameraRotation, this.cameraPosition)
         this.projectionMatrix = mat4.perspective(mat4.create(), projection.fovY, projection.aspectRatio, projection.near, projection.far)
         this.canvasScale = canvasScale
@@ -106,7 +110,6 @@ export class ExampleScene {
             throw new Error('shader program not initialized')
         }
 
-        this.vertexBuffer = this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer)
 
         // Pass all the model vertexData (position, and normal direction) to the vertex buffer
@@ -131,13 +134,12 @@ export class ExampleScene {
         this.gl.vertexAttribPointer(normalAttributeLocation, 3, this.gl.FLOAT, false, bufferDataStride, normalDataOffset)
 
         // Create something called an index buffer that specifies the order to draw the vertices and their attributes
-        const indexBuffer = this.gl.createBuffer()
-        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer)
         this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.modelData.indices), this.gl.STATIC_DRAW)
     }
 
     private setupModelMatrix(): void {
-        this.modelMatrix = mat4.fromRotationTranslation(mat4.create(), this.rotation, this.position)
+        this.modelMatrix = mat4.fromRotationTranslationScale(mat4.create(), this.rotation, this.position, this.scale)
     }
 
     // Assigns variables called uniforms to the shader
@@ -235,7 +237,13 @@ export class ExampleScene {
         this.gl.viewport(0, 0, width, height)
     }
 
-    public updateTransform(position?: vec3, rotation?: quat, scale?: vec3): void {
+    public updateCameraTransform(position?: vec3, rotation?: quat): void {
+        this.cameraPosition = position ?? this.cameraPosition
+        this.cameraRotation = rotation ?? this.cameraRotation
+        this.viewMatrix = mat4.fromRotationTranslation(mat4.create(), this.cameraRotation, this.cameraPosition)
+    }
+
+    public updateModelTransform(position?: vec3, rotation?: quat, scale?: vec3): void {
         this.position = position ?? this.position
         this.rotation = rotation ?? this.rotation
         this.scale = scale ?? this.scale
@@ -262,5 +270,9 @@ export class ExampleScene {
         vec3.multiply(this.scale, this.scale, scale)
     }
 
-    stop(): void {}
+    stop(): void {
+        // this.gl.deleteBuffer(this.vertexBuffer)
+        // this.gl.deleteBuffer(this.indexBuffer)
+        // window.removeEventListener('resize', this.handleResize)
+    }
 }

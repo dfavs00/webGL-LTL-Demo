@@ -11,7 +11,7 @@ const App = () => {
     <div>
       <div style={{display: "flex", justifyContent: 'space-between', padding: '1rem', backgroundColor: '#9A9A9A'}}>
           <button onClick={()=>{setExampleIndex(0)}}>Example 1 - Vertex Data</button>
-          <button onClick={()=>{setExampleIndex(1)}}>Example 2 - Matrices and Uniforms</button>
+          <button onClick={()=>{setExampleIndex(1)}}>Example 2 - Uniforms</button>
           <button onClick={()=>{setExampleIndex(2)}}>Example 3 - Shaders</button>
           <button onClick={()=>{setExampleIndex(3)}}>Example 4 - HTML DOM Events</button>
       </div>
