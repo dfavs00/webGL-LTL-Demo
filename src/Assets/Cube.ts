@@ -1,13 +1,13 @@
 import { ModelData } from "../GraphicsEngine/Model";
 
 /*
- * A model representing a simple cube 
+ * A model representing a cube with the origin at the center
  */
 export const CubeModelData: ModelData = {
     // use 36 vertices to represent the cube (makes texturing easier)
     vertices: [
         // Front face
-        -0.5, -0.5, 0.5,
+        -0.5, -0.5, 0.5, // front bottom left
         0.5, -0.5, 0.5,
         0.5, 0.5, 0.5,
         -0.5, 0.5, 0.5,

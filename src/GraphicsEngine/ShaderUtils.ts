@@ -32,7 +32,7 @@ export const createShaderProgram = (gl: WebGL2RenderingContext, vShader: WebGLSh
 export const compileShader = (gl: WebGL2RenderingContext, shaderSource: string, type: number): WebGLShader => {
     const shader = gl.createShader(type)
     if (!shader) {
-        throw new Error('failed to create vertex shader')
+        throw new Error('failed to create shader')
     }
 
     gl.shaderSource(shader, shaderSource)
@@ -40,8 +40,8 @@ export const compileShader = (gl: WebGL2RenderingContext, shaderSource: string, 
 
     // verify the shader compiled properly
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error('Vertex shader compilation failed:', gl.getShaderInfoLog(shader));
-        throw new Error('Vertex shader compilation failed')
+        console.error('shader compilation failed:', gl.getShaderInfoLog(shader));
+        throw new Error('shader compilation failed')
     }
 
     return shader
