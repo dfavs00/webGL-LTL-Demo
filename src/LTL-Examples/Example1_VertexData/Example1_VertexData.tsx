@@ -92,6 +92,10 @@ export const Example1: React.FC = () => {
                 <h3>
                     Reset at any time by refreshing the page!
                 </h3>
+                <div>
+                    *If you are curious why there are more than 8 vertices for this cube model, it is so you can accurately set the normals for each face of the cube. 
+                    This is because each face of the cube has a different normal direction, and each vertex can only have one normal direction.
+                </div>
             </div>
         </div>
     )
